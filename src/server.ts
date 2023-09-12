@@ -1,7 +1,8 @@
 import app from './app/app';
+const gracefulShutdown = require('http-graceful-shutdown');
 
-// Process.env will always be comprised of strings, so we typecast the port to a
-// number.
 const PORT:number = Number(process.env.PORT) || 3001;
 
-app.listen(PORT);
+const server = app.listen(PORT);
+
+gracefulShutdown(server);
