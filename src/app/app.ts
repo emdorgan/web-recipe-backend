@@ -1,12 +1,14 @@
-import * as Koa from 'koa';
+import cors = require('@koa/cors');
+import { Context } from 'koa';
 import * as HttpStatus from 'http-status-codes';
+const Router = require('koa-router');
+const Koa = require('koa');
+const compress = require ('koa-compress');
+const app = new Koa();
+const router = new Router();
 
-const compression = require('compression')
-const cors = require('cors')
-const app:Koa = new Koa();
 
-
-app.use(async (ctx: Koa.Context, next: () => Promise<any>) => {
+app.use(async (ctx: Context, next: () => Promise<any>) => {
   try {
     await next();
   } catch (error) {
@@ -17,15 +19,19 @@ app.use(async (ctx: Koa.Context, next: () => Promise<any>) => {
   }
 });
 
-// test route
-app.use(async (ctx:Koa.Context) => {
-  ctx.body = 'Hello world';
-  console.log('Hello world!')
-});
 
 // Middleware
 app.use(cors())
-app.use(compression())
+app.use(compress())
+
+//test route
+app.use(async (context:Context) => {
+  context.body = 'Hello world';
+  console.log('Hello world!')
+});
+
+
+app.use(router.routes());
 
 app.on('error', console.error);
 
